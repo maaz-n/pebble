@@ -20,8 +20,11 @@ def generate_page(from_path: str, template_path: str, dest_path: str):
 
     title = extract_title(markdown)
 
-    final_html = template.replace("{{ Title }}", title).replace(
-        "{{ Content }}", html_content
+    final_html = (
+        template.replace("{{ Title }}", title)
+        .replace("{{ Content }}", html_content)
+        .replace('href="/', f'href="{dest_path}')
+        .replace('src="/', f'src="{dest_path}')
     )
 
     os.makedirs(dest_path, exist_ok=True)
@@ -39,10 +42,6 @@ def generate_pages_recursive(
     md_files = list(content_path.glob("**/*.md"))
 
     for file in md_files:
-        rel_path = os.path.relpath(file, dir_path_content)
-        target_dir = os.path.join(dest_dir_path, os.path.dirname(rel_path))
-        print(target_dir)
-        return
         target_dir = "/".join(
             str(file).replace("content", dest_dir_path).split("/")[:-1]
         )
